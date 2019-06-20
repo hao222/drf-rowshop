@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'trade',
     'user_operation',
     'crispy_forms',
-    'xadmin'
+    'xadmin',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -135,3 +136,8 @@ STATIC_URL = '/static/'
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS':'rest_framework.pagination.PageNumberPagination',
+    # 'PAGE_SIZE':9,
+}

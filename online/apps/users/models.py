@@ -17,8 +17,9 @@ class UserApp(AbstractUser):
         verbose_name = "用户"
         verbose_name_plural = "用户"
 
+    #此处应该返回username 因为继承的AbstractUser里的username就是不为空  而此处的name可以为空 所以后面会报错no——string
     def __str__(self):
-        return self.name
+        return self.username
 
 
 class VerifyCode(models.Model):
