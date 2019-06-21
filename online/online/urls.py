@@ -22,16 +22,29 @@ from online.settings import MEDIA_ROOT
 from django.views.static import serve
 
 from rest_framework.documentation import include_docs_urls
+from rest_framework.routers import DefaultRouter
+from rest_framework.authtoken import views as vs
 # from goods.views_base import GoodsListView
-from goods.views import GoodsListView
+from goods.views import GoodsListViewSet, CategoryViewSet
+from goods import views
+
+router = DefaultRouter()
+#配置goods的url
+router.register(r'goods', GoodsListViewSet, base_name="goods")
+
+#配置goodscategory的url
+router.register(r'goods', CategoryViewSet, base_name="categorys")
 
 urlpatterns = [
     path('xadmin/', xadmin.site.urls),
     re_path(r'^media/(?P<path>.*)$', serve, {"document_root": MEDIA_ROOT}),
 
     path('api-auth/', include('rest_framework.urls')),
-    #商品列表页面
-    path('goods/', GoodsListView.as_view()),
-
+    path('', include(router.urls)),
     path('docs/', include_docs_urls(title="online商品"))
+]
+
+# 该路由返回一个json格式的{ 'token' : '9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b'}  保存到我们的数据库的那个token表
+urlpatterns += [
+    path(r'api-token-auth/', vs.obtain_auth_token)
 ]
