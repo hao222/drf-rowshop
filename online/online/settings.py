@@ -47,7 +47,9 @@ INSTALLED_APPS = [
     'user_operation',
     'crispy_forms',
     'xadmin',
-    'rest_framework'
+    'rest_framework',
+    'django_filters',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -140,4 +142,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS':'rest_framework.pagination.PageNumberPagination',
     # 'PAGE_SIZE':9,
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',  # 这俩个是默认配置 以便登录接口文档 实际用的是django的中间件  是为验证用户信息
+        'rest_framework.authentication.TokenAuthentication',    # 这个为 token 认证方式  本次接口所使用的 每次接口调用时 都会经过验证 user 为request 返回user  用于登录
+    )
 }
