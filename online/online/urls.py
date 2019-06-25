@@ -33,7 +33,7 @@ router = DefaultRouter()
 router.register(r'goods', GoodsListViewSet, base_name="goods")
 
 #配置goodscategory的url
-router.register(r'goods', CategoryViewSet, base_name="categorys")
+router.register(r'categorys', CategoryViewSet, base_name="categorys")
 
 urlpatterns = [
     path('xadmin/', xadmin.site.urls),
