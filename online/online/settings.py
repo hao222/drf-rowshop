@@ -145,6 +145,20 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',  # 这俩个是默认配置 以便登录接口文档 实际用的是django的中间件  是为验证用户信息
-        'rest_framework.authentication.TokenAuthentication',    # 这个为 token 认证方式  本次接口所使用的 每次接口调用时 都会经过验证 user 为request 返回user  用于登录
+        # 'rest_framework.authentication.TokenAuthentication',    # 这个为 token 认证方式  本次接口所使用的 每个接口调用时 都会经过验证 user 为request 返回user  用于登录
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
     )
+}
+
+# django 默认的auth认证 是比对用户名和密码   为此我们可以设置一个函数 来自定义django认证
+
+AUTHENTICATION_BACKENDS = (
+    'users.views.CustomBackend',
+)
+
+import datetime
+# JWT设置
+JWT_AUTH = {
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7), #7天过期时间
+    'JWT_AUTH_HEADER_PREFIX': 'JWT', # 默认设置认证
 }

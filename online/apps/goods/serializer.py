@@ -12,7 +12,7 @@ class GoodsCategorySerializer3(serializers.ModelSerializer):
     商品类别序列化  三级分类
     """
     class Meta:
-        model = Goods
+        model = GoodsCategory
         fields = "__all__"
 
 
@@ -22,7 +22,7 @@ class GoodsCategorySerializer2(serializers.ModelSerializer):
     """
     sub_cat = GoodsCategorySerializer3(many=True)
     class Meta:
-        model = Goods
+        model = GoodsCategory
         fields = "__all__"
 
 

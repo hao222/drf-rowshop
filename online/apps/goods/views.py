@@ -2,7 +2,7 @@ from rest_framework import mixins, generics, viewsets, filters
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
-
+from rest_framework.authentication import TokenAuthentication
 from .filters import GoodsFilter
 from .serializer import GoodsSerializer, CategorySerializer
 from .models import Goods, GoodsCategory
@@ -25,6 +25,9 @@ class GoodsListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Goods.objects.all()
     serializer_class = GoodsSerializer
     pagination_class = GoodsPage
+
+    # 添加token认证  只有通过认证后才可以访问此时的views
+    # authentication_classes = (TokenAuthentication, )
     # 俩行代替下面的get_queryset
     filter_backends = (DjangoFilterBackend, filters.SearchFilter)
     filter_class = GoodsFilter
