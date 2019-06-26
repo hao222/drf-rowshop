@@ -27,13 +27,17 @@ from rest_framework.authtoken import views as vs
 # from goods.views_base import GoodsListView
 from goods.views import GoodsListViewSet, CategoryViewSet
 from goods import views
+from users.views import SmsCodeViewSet, UserViewSet
 
 router = DefaultRouter()
 #配置goods的url
 router.register(r'goods', GoodsListViewSet, base_name="goods")
-
 #配置goodscategory的url
 router.register(r'categorys', CategoryViewSet, base_name="categorys")
+# 配置短信
+router.register(r'code', SmsCodeViewSet, base_name="code")
+# 用户注册
+router.register(r'users', UserViewSet, base_name="users")
 
 urlpatterns = [
     path('xadmin/', xadmin.site.urls),

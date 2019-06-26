@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 import sys
+import datetime
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # apps和extra_apps mark source root 这样可以直接通过app import
@@ -40,7 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'apps.users.apps.UsersConfig',
+    'users',
     'DjangoUeditor',
     'goods',
     'trade',
@@ -63,6 +64,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# 允许所有
 CORS_ORIGIN_ALLOW_ALL = True
 
 ROOT_URLCONF = 'online.urls'
@@ -154,14 +157,18 @@ REST_FRAMEWORK = {
 }
 
 # django 默认的auth认证 是比对用户名和密码   为此我们可以设置一个函数 来自定义django认证
-
 AUTHENTICATION_BACKENDS = (
     'users.views.CustomBackend',
 )
 
-import datetime
 # JWT设置
 JWT_AUTH = {
     'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7), #7天过期时间
     'JWT_AUTH_HEADER_PREFIX': 'JWT', # 默认设置认证
 }
+
+# 手机正则
+REGEX_PHONE = "^1[358]\d{9}$|^147\d{8}$|^176\d{8}$"
+
+# 云片网设置
+APIKEY = "4f50ae2bdef057fe764d58fd1c484bdf"
