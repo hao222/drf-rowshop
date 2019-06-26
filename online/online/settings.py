@@ -32,6 +32,11 @@ ALLOWED_HOSTS = ['*']
 
 AUTH_USER_MODEL = 'users.UserApp'
 
+
+# django 默认的auth认证 是比对用户名和密码   为此我们可以设置一个函数 来自定义django认证
+AUTHENTICATION_BACKENDS = (
+    'users.views.CustomBackend',
+)
 # Application definition
 
 INSTALLED_APPS = [
@@ -155,11 +160,6 @@ REST_FRAMEWORK = {
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
     )
 }
-
-# django 默认的auth认证 是比对用户名和密码   为此我们可以设置一个函数 来自定义django认证
-AUTHENTICATION_BACKENDS = (
-    'users.views.CustomBackend',
-)
 
 # JWT设置
 JWT_AUTH = {
