@@ -44,7 +44,12 @@ urlpatterns = [
     path('docs/', include_docs_urls(title="online商品"))
 ]
 
-# 该路由返回一个json格式的{ 'token' : '9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b'}  保存到我们的数据库的那个token表
+# drf 自带的认证模式该路由返回一个json格式的{ 'token' : '9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b'}  保存到我们的数据库的那个token表
+# urlpatterns += [
+#     path(r'api-token-auth/', vs.obtain_auth_token)
+# ]
+from rest_framework_jwt.views import obtain_jwt_token
+# jwt的认证接口
 urlpatterns += [
-    path(r'api-token-auth/', vs.obtain_auth_token)
+    path(r'login/', obtain_jwt_token),
 ]
