@@ -6,6 +6,7 @@ from django.db.models import Q
 from rest_framework.response import Response
 from rest_framework import mixins, viewsets, status
 from django.shortcuts import render
+from rest_framework_jwt.serializers import jwt_decode_handler, jwt_payload_handler, jwt_encode_handler
 
 from users.serializers import SmsSerializer, UserRegSerializer
 from ucode.yunpian import YunPian
@@ -75,3 +76,23 @@ class UserViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
     """
     serializer_class = UserRegSerializer
     queryset = User.objects.all()
+
+    # 如果想要在 注册时就登录  那么我们需要在此传递一个token接口  保存的时候保存token
+    # 为什么要重载它？  serializer 返回的是serializers 存放的fields 并没有 token值
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = self.perform_create(serializer)
+
+        re_dict = serializer.data
+        payload = jwt_payload_handler(user)
+        re_dict["token"] = jwt_encode_handler(payload)
+        re_dict["name"] = user.name if user.name else user.username
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(re_dict, status=status.HTTP_201_CREATED, headers=headers)
+
+    # 真正的存入数据库操作
+    def perform_create(self, serializer):
+        return serializer.save()
