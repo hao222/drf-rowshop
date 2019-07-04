@@ -24,16 +24,18 @@ class GoodsCategory(models.Model):
     add_time = models.DateTimeField(default=datetime.now, verbose_name="添加时间")
 
 
-class Meta:
-        verbose_name = "商品类别"
-        verbose_name_plural = verbose_name
+    class Meta:
+            verbose_name = "商品类别"
+            verbose_name_plural = verbose_name
+    def __str__(self):
+        return self.name
 
 
 class GoodsCategoryBrand(models.Model):
     """
-    品牌
+    品牌 首页展示大分类
     """
-    category = models.ForeignKey(GoodsCategory, null=True, blank=True, verbose_name="商品类目", on_delete=models.CASCADE)
+    category = models.ForeignKey(GoodsCategory, related_name="brands", null=True, blank=True, verbose_name="商品类目", on_delete=models.CASCADE)
     name = models.CharField(default="", max_length=30, verbose_name="品牌名", help_text="品牌名")
     desc = models.TextField(default="", max_length=200, verbose_name="品牌描述", help_text="品牌描述")
     image = models.ImageField(max_length=200, upload_to="brands/")
@@ -101,7 +103,7 @@ class Banner(models.Model):
     goods = models.ForeignKey(Goods, verbose_name="商品", on_delete=models.CASCADE)
     image = models.ImageField(upload_to="banner", verbose_name="轮播图片")
 
-    index = models.ImageField(default=0,verbose_name="轮播顺序")
+    index = models.IntegerField(default=0,verbose_name="轮播顺序")
     add_time = models.DateTimeField(default=datetime.now, verbose_name="添加时间")
 
     class Meta:
@@ -114,7 +116,7 @@ class Banner(models.Model):
 
 class IndexAd(models.Model):
     """
-    商品广告
+    商品广告   靠左的广告位 和一级分类同组
     """
     category = models.ForeignKey(GoodsCategory, on_delete=models.CASCADE, related_name='category',verbose_name="商品类目")
     goods = models.ForeignKey(Goods, on_delete=models.CASCADE, related_name='goods')

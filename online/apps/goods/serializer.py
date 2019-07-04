@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from goods.models import Goods, GoodsCategory, GoodsImage
+from django.db.models import Q
+
+from goods.models import Goods, GoodsCategory, GoodsImage, Banner, GoodsCategoryBrand, IndexAd
 
 __author__ = "hao"
 
@@ -49,3 +51,50 @@ class GoodsSerializer(serializers.ModelSerializer):
         model = Goods
         fields = "__all__"
 
+
+class BannerSerializer(serializers.ModelSerializer):
+    """
+    轮播图
+    """
+    class Meta:
+        model = Banner
+        fields = "__all__"
+
+
+class BrandSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = GoodsCategoryBrand
+        fields = "__all__"
+
+class IndexCategorySerializer(serializers.ModelSerializer):
+    brands = BrandSerializer(many=True)
+    # 由于获取商品的时候 是通过第三类别最小分类下的商品  所以需要自己定义个函数方法
+    goods = serializers.SerializerMethodField()
+    # 取出二级商品分类
+    sub_cat = CategorySerializer2(many=True)
+    ad_goods = serializers.SerializerMethodField()
+
+    def get_goods(self, obj):
+        all_goods = Goods.objects.filter(Q(category_id=obj.id)|Q(category__parent_category_id=obj.id)|Q(category__parent_category__parent_category_id=obj.id))
+        # 对商品进行序列化
+        # 当serializer里嵌套serializer 的时候 会出现域名不会自动加上的问题，主要在于跨serializer，上下文指示不明，需要重新声明一下。
+        goods_serializer = GoodsSerializer(all_goods, many=True, context={'request': self.context["request"]})
+
+        return goods_serializer.data
+
+    def get_ad_goods(self, obj):
+        goods_json = {}
+        ad_goods = IndexAd.objects.filter(category_id=obj.id)
+        if ad_goods:
+            good_ins = ad_goods[0].goods
+            goods_json = GoodsSerializer(good_ins, many=False, context={'request': self.context["request"]}).data
+        return goods_json
+
+    class Meta:
+        model = GoodsCategory
+        fields = "__all__"
+
+
+class HotWordsSerializer(serializers.ModelSerializer):
+    pass

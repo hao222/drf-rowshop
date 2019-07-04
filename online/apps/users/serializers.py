@@ -88,3 +88,12 @@ class UserRegSerializer(serializers.ModelSerializer):
         model = User
         # 继承自django USer  搜哦一username必填
         fields = ("username", "mobile", "code", "password")
+
+
+class UserDetailSerializer(serializers.ModelSerializer):
+    """
+    用户详情
+    """
+    class Meta:
+        model = User
+        fields = ("name", "mobile", "email", "gender", "birthday")

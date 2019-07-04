@@ -17,4 +17,5 @@ class GoodsFilter(django_filters.rest_framework.FilterSet):
 
     class Meta:
         model = Goods
-        fields = ['pricemin', 'pricemax']
+        # 是否是热销产品   只需要加入is_hot
+        fields = ['pricemin', 'pricemax', 'is_hot']

@@ -16,6 +16,7 @@ class UserFav(models.Model):
     class Meta:
         verbose_name = '用户收藏'
         verbose_name_plural = verbose_name
+        # 联合唯一索引  验证   serializer 也可以找到此验证
         unique_together = ("user", "goods")
 
     def __str__(self):

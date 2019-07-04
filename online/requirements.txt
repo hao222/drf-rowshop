@@ -1,0 +1,16 @@
+django
+pillow
+mysqlclient
+djangorestframework-jwt
+djangorestframework
+markdown
+django-filter
+dajngo-crispy-forms
+django-reversion
+django-formtools
+future
+httplib2
+six
+django-cors-headers
+xlwt
+xlsxwriter

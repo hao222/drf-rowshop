@@ -13,7 +13,6 @@ class ShoppingCart(models.Model):
     goods = models.ForeignKey(Goods, verbose_name=u"商品", on_delete=models.CASCADE)
     nums = models.IntegerField(default=0, verbose_name="购买数量")
 
-
     add_time = models.DateTimeField(default=datetime.now, verbose_name=u"添加时间")
 
     class Meta:

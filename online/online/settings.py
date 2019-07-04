@@ -36,6 +36,10 @@ AUTH_USER_MODEL = 'users.UserApp'
 # django 默认的auth认证 是比对用户名和密码   为此我们可以设置一个函数 来自定义django认证
 AUTHENTICATION_BACKENDS = (
     'users.views.CustomBackend',
+    'social_core.backends.weibo.WeiboOAuth2',
+    'social_core.backends.qq.BaseOAuth2',
+    'social_core.backends.weixin.WeixinOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
 )
 # Application definition
 
@@ -57,6 +61,7 @@ INSTALLED_APPS = [
     'django_filters',
     'rest_framework.authtoken',
     'corsheaders',
+    'social_django',
 ]
 
 MIDDLEWARE = [
@@ -87,6 +92,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -104,7 +111,8 @@ DATABASES = {
         'NAME': "drfvue",
         'USER': "root",
         'PASSWORD': "234567",
-        'HOST': '127.0.0.1'
+        'HOST': '127.0.0.1',
+        # 'OPTIONS':{'init_command':'SET storage_engine=INNODB;'}
     }
 }
 
@@ -147,6 +155,9 @@ USE_TZ = False  # 当地时间
 
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 
@@ -154,11 +165,21 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS':'rest_framework.pagination.PageNumberPagination',
     # 'PAGE_SIZE':9,
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.BasicAuthentication',       # 会要求浏览器提供 用户名  密码
         'rest_framework.authentication.SessionAuthentication',  # 这俩个是默认配置 以便登录接口文档 实际用的是django的中间件  是为验证用户信息
-        # 'rest_framework.authentication.TokenAuthentication',    # 这个为 token 认证方式  本次接口所使用的 每个接口调用时 都会经过验证 user 为request 返回user  用于登录
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-    )
+        # 'rest_framework.authentication.TokenAuthentication',    # 这个为 token 认证方式 每个接口调用时 都会经过验证 user 为request 返回user  用于登录
+        # JWT 是我们这次要使用的验证方式，但不是全局验证  因为如果在访问页面时，token过期了，那么就会导致错误。
+        # 'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+    ),
+    # ddrf 设置api的访问速率  通常是为了防止 在一段时间内 爬虫的操作
+    'DEFAULT_THROTTLE_CLASSES': (
+        'rest_framework.throttling.AnonRateThrottle',    # 用户登录之前， 通过ip地址判断
+        'rest_framework.throttling.UserRateThrottle'     # 用户登录后  通过token判断
+    ),
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '2/minute',
+        'user': '3/minute'
+    }
 }
 
 # JWT设置
@@ -172,3 +193,33 @@ REGEX_PHONE = "^1[358]\d{9}$|^147\d{8}$|^176\d{8}$"
 
 # 云片网设置
 APIKEY = "4f50ae2bdef057fe764d58fd1c484bdf"
+
+# 公共的数据可以添加缓存
+#   drf cache 缓存过期时间
+REST_FRAMEWORK_EXTENSIONS = {
+    'DEFAULT_CACHE_RESPONSE_TIMEOUT': 15        # 过期时间15秒
+}
+
+# redis 作为缓存
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://:123456@127.0.0.1:6379",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+
+# 微博开发平台  app_key   secret
+SOCIAL_AUTH_WEIBO_KEY = '3604588907'
+SOCIAL_AUTH_WEIBO_SECRET = 'd4b6f86e71a9a960e48513e11a0c2352'
+
+SOCIAL_AUTH_QQ_KEY = 'foobar'
+SOCIAL_AUTH_QQ_SECRET = 'bazqux'
+
+SOCIAL_AUTH_WEIXIN_KEY = 'foobar'
+SOCIAL_AUTH_WEIXIN_SECRET = 'bazqux'
+
+# 登录成功之后 王什么地方跳转
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/index/'
