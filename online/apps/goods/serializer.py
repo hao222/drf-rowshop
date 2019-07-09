@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from django.db.models import Q
 
-from goods.models import Goods, GoodsCategory, GoodsImage, Banner, GoodsCategoryBrand, IndexAd
+from goods.models import Goods, GoodsCategory, GoodsImage, Banner, GoodsCategoryBrand, IndexAd, HotSearchWords
 
 __author__ = "hao"
 
@@ -97,4 +97,6 @@ class IndexCategorySerializer(serializers.ModelSerializer):
 
 
 class HotWordsSerializer(serializers.ModelSerializer):
-    pass
+    class Meta:
+        model = HotSearchWords
+        fields = "__all__"
