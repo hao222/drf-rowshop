@@ -37,6 +37,7 @@ class GoodsListViewSet(CacheResponseMixin, mixins.ListModelMixin, mixins.Retriev
     filter_class = GoodsFilter
     search_fields = ('name', 'goods_brief', 'goods_desc')   # 这些是searchfilter 搜索字段  还有 ^  以什么开头  = 完全匹配 @ 全文搜索 $正则表达式搜索
     ordering_fields = ('sold_num', 'shop_price')  # 排序
+    parser_classes = ()
     # 重写retrieve方法  修改详情 点击数 +1
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()

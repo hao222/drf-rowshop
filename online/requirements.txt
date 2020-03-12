@@ -1,11 +1,11 @@
-django
+django==2.2
 pillow
 mysqlclient
 djangorestframework-jwt
 djangorestframework
 markdown
 django-filter
-dajngo-crispy-forms
+django-crispy-forms
 django-reversion
 django-formtools
 future

@@ -59,7 +59,7 @@ INSTALLED_APPS = [
     'xadmin',
     'rest_framework',
     'django_filters',
-    'rest_framework.authtoken',
+    'rest_framework.authtoken',   # 使用 TokenAuthentication 时候 需要用到，会生成token表，此处弃用
     'corsheaders',
     'social_django',
 ]
@@ -108,9 +108,9 @@ WSGI_APPLICATION = 'online.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': "drfvue",
+        'NAME': "vueshop",
         'USER': "root",
-        'PASSWORD': "234567",
+        'PASSWORD': "123456",
         'HOST': '127.0.0.1',
         # 'OPTIONS':{'init_command':'SET storage_engine=INNODB;'}
     }
@@ -204,7 +204,8 @@ REST_FRAMEWORK_EXTENSIONS = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://:123456@127.0.0.1:6379",
+        # "LOCATION": "redis://:123456@127.0.0.1:6379",
+        "LOCATION": "redis://127.0.0.1:6379",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
