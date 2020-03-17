@@ -26,15 +26,15 @@ class UserFavSerializer(serializers.ModelSerializer):
     """
     用户收藏
     """
-    # 用户收藏时不应该出现user字段， user应该是自动获取登录的user
+    # 用户收藏时不应该出现user字段， user应该是自动获取登录的user 获取当前的用户并隐藏用户
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     class Meta:
-        # 验证联合唯一性   这个写在meta 里面 意为 多个字段。
+        # 验证联合唯一性   这个写在meta 里面 意为 多个字段。 防止一件商品重复收藏
         validators = [
             UniqueTogetherValidator(
-                queryset = UserFav.objects.all(),
-                fields = ("user", "goods"),
-                message = "已经收藏"
+                queryset=UserFav.objects.all(),
+                fields=("user", "goods"),
+                message="已经收藏"
             )
         ]
         model = UserFav
@@ -57,6 +57,12 @@ class LeavingMessageSerializer(serializers.ModelSerializer):
 class AddressSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     add_time = serializers.DateTimeField(read_only=True, format="%Y-%m-%d %H:%M:%S")
+
+    def validate_signer_mobile(self, signer_mobile):
+        if len(signer_mobile) != 11:
+            raise serializers.ValidationError("手机号不合法")
+        return signer_mobile
+
 
     class Meta:
         model = UserAddress

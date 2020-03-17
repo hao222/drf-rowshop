@@ -13,6 +13,7 @@ User = get_user_model()
 class SmsSerializer(serializers.Serializer):
     mobile = serializers.CharField(max_length=11)
 
+    # validate_字段名，这里validate_mobile，表示只对mobile字段进行校验，其他的字段不校验
     def validate_mobile(self, mobile):
         """
         验证手机号
@@ -32,7 +33,7 @@ class SmsSerializer(serializers.Serializer):
         one_minute_age = datetime.now() - timedelta(minutes=1) # 1分钟之前
         if VerifyCode.objects.filter(add_time__gt=one_minute_age, mobile=mobile).count():
             raise serializers.ValidationError("距离上一次发送不到1分钟")
-
+        return mobile
 
 class UserRegSerializer(serializers.ModelSerializer):
     """
@@ -53,7 +54,7 @@ class UserRegSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
         style={'input_type': 'password'},
         label="密码",
-        write_only=True,    # 密码不能让他返回
+        write_only=True,    # 密码不能让他序列号返回
     )
 
     # 我们需要重载create 方法  否则保存的密码是没加密过的
@@ -65,6 +66,7 @@ class UserRegSerializer(serializers.ModelSerializer):
     #     user.save()
     #     return user
     # 验证字段  self.initial_data 前端post传过来的值
+    # 不需要返回验证字段code 因为数据库user里没有该字段 只是验证作用
     def validate_code(self, code):
         ver_recode = VerifyCode.objects.filter(mobile=self.initial_data["username"]).order_by("-add_time")
         if ver_recode:
@@ -96,4 +98,4 @@ class UserDetailSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = User
-        fields = ("name", "mobile", "email", "gender", "birthday")
+        fields = ("username", "mobile", "email", "gender", "birthday")

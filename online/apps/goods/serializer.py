@@ -45,6 +45,7 @@ class GoodsImageSerializer(serializers.ModelSerializer):
 #让外键的数据也显示出来
 class GoodsSerializer(serializers.ModelSerializer):
     # related_name 名称
+    # 直接取出外键所包含的字段内容
     category = CategorySerializer()
     images = GoodsImageSerializer(many=True)
     class Meta:

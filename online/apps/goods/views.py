@@ -1,6 +1,7 @@
-from rest_framework import mixins, generics, viewsets, filters
+from rest_framework import mixins, generics, viewsets, filters, status
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework_extensions.cache.mixins import CacheResponseMixin
 from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from django_filters.rest_framework import DjangoFilterBackend
@@ -20,6 +21,14 @@ class GoodsPage(PageNumberPagination):
     page_query_param = 'page'
     max_page_size = 100
 
+class GoodsListView(APIView):
+    """
+    练习
+    """
+    def get(self, request, format=None):
+        goods = Goods.objects.all()
+        goods_ser = GoodsSerializer(goods, many=True)
+        return Response(goods_ser.data, status=status.HTTP_200_OK)
 
 class GoodsListViewSet(CacheResponseMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     """
@@ -33,7 +42,7 @@ class GoodsListViewSet(CacheResponseMixin, mixins.ListModelMixin, mixins.Retriev
     # 添加token认证  只有通过认证后才可以访问此时的views
     # authentication_classes = (TokenAuthentication, )
     # 俩行代替下面的get_queryset
-    filter_backends = (DjangoFilterBackend, filters.SearchFilter)
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter)
     filter_class = GoodsFilter
     search_fields = ('name', 'goods_brief', 'goods_desc')   # 这些是searchfilter 搜索字段  还有 ^  以什么开头  = 完全匹配 @ 全文搜索 $正则表达式搜索
     ordering_fields = ('sold_num', 'shop_price')  # 排序
@@ -46,10 +55,21 @@ class GoodsListViewSet(CacheResponseMixin, mixins.ListModelMixin, mixins.Retriev
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
+    def get_queryset(self):
+        """
+        过滤 视图类里有queryset 或者有get_queryset
+        对于一些复杂的过滤 排序，等 可以在这写逻辑
+        :return:
+        """
+        pass
+
 # RetrieveModelMixin 展示详情数据，并且返回的url 遵循 restful 不需要做任何配置。
 class CategoryViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     """
     分类列表数据
+    先取出一级类目 然后通过serializer序列化取出二级 三级
+    外键是自身 取出sub_cat
+    RetrieveModelMixin  不需要url后正则匹配 直接是restful规范
     """
     queryset = GoodsCategory.objects.filter(category_type=1)
     serializer_class = CategorySerializer

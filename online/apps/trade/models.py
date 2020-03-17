@@ -18,6 +18,7 @@ class ShoppingCart(models.Model):
     class Meta:
         verbose_name = '购物车'
         verbose_name_plural = verbose_name
+        # 绑定商品用户唯一性
         unique_together = ("user", "goods")
 
     def __str__(self):

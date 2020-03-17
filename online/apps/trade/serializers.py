@@ -16,6 +16,7 @@ from .models import ShoppingCart, OrderInfo, OrderGoods
 ##########################################
 class ShopCartSerializer(serializers.Serializer):
     """
+    因为继承的是Serializer 所以需要重写里面的创建更新操作
     购物车商品序列化
     """
     user = serializers.HiddenField(
@@ -28,7 +29,8 @@ class ShopCartSerializer(serializers.Serializer):
     # 序列化为一个商品id，并不是商品详情
     goods = serializers.PrimaryKeyRelatedField(required=True, queryset=Goods.objects.all())
 
-    # 此时已经处理过的数据validated_data  在serializer里面user不是直接放在request，而是在context上下文
+    # 此时已经处理过的数据为validated_data  在serializer里面user不是直接放在request，而是在context上下文
+    # initial_data 是前端传过来未处理的数据
     # 如果购物车有商品 则在数量上加1 ， 没有则创建 并返回给views
     def create(self, validated_data):
         user = self.context["request"].user
@@ -94,7 +96,7 @@ class OrderGoodsSerializer(serializers.ModelSerializer):
     """
     订单中的商品序列化类
     """
-    goods = GoodsSerializer(many=False)  # 是一个外键 所以只有一个
+    goods = GoodsSerializer(many=False)  # order是一个外键 所以只有一个
 
     class Meta:
         model = OrderGoods

@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',   # 使用 TokenAuthentication 时候 需要用到，会生成token表，此处弃用
     'corsheaders',
     'social_django',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -168,23 +169,24 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',       # 会要求浏览器提供 用户名  密码
         'rest_framework.authentication.SessionAuthentication',  # 这俩个是默认配置 以便登录接口文档 实际用的是django的中间件  是为验证用户信息
         # 'rest_framework.authentication.TokenAuthentication',    # 这个为 token 认证方式 每个接口调用时 都会经过验证 user 为request 返回user  用于登录
+        # 所以不能全局 在viewset视图中添加authentication_class
         # JWT 是我们这次要使用的验证方式，但不是全局验证  因为如果在访问页面时，token过期了，那么就会导致错误。
         # 'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
     ),
     # ddrf 设置api的访问速率  通常是为了防止 在一段时间内 爬虫的操作
-    'DEFAULT_THROTTLE_CLASSES': (
-        'rest_framework.throttling.AnonRateThrottle',    # 用户登录之前， 通过ip地址判断
-        'rest_framework.throttling.UserRateThrottle'     # 用户登录后  通过token判断
-    ),
-    'DEFAULT_THROTTLE_RATES': {
-        'anon': '2/minute',
-        'user': '3/minute'
-    }
+    # 'DEFAULT_THROTTLE_CLASSES': (
+    #     'rest_framework.throttling.AnonRateThrottle',    # 用户登录之前， 通过ip地址判断
+    #     'rest_framework.throttling.UserRateThrottle'     # 用户登录后  通过token判断
+    # ),
+    # 'DEFAULT_THROTTLE_RATES': {
+    #     'anon': '2/minute',
+    #     'user': '3/minute'
+    # }
 }
 
 # JWT设置
 JWT_AUTH = {
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7), #7天过期时间
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1), #1天过期时间
     'JWT_AUTH_HEADER_PREFIX': 'JWT', # 默认设置认证
 }
 

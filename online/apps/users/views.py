@@ -51,7 +51,7 @@ class SmsCodeViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
     # 重写create方法
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True) # 验证不通过 直接抛出400异常
+        serializer.is_valid(raise_exception=True) # 验证不通过 直接抛出400异常 以下代码不会执行
 
         mobile = serializer.validated_data["mobile"]
         code = self.get_code()
@@ -105,8 +105,8 @@ class UserViewSet(mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.Retri
         return []
 
     # 获取user.id  由于创建时候没有给id  所以 重写 get_object 返回user详情实例
-    def get_object(self):
-        return self.request.user
+    # def get_object(self):
+    #     return self.request.user
 
     # 如果想要在 注册时就登录  那么我们需要在此传递一个token接口  保存的时候保存token
     # 为什么要重xie它？  serializer 返回的是serializers 存放的fields 并没有 token值

@@ -45,7 +45,7 @@ router.register(r'users', UserViewSet, base_name="users")
 # 用户收藏
 router.register(r'userfavs', UserFavViewset, base_name="userfavs")
 # 用户留言
-router.register(r'lvmessage', LeavingMessageViewSet, base_name="lvmessage")
+router.register(r'messages', LeavingMessageViewSet, base_name="messages")
 # 收货地址
 router.register(r'address', AddressViewSet, base_name="address")
 # 购物车
@@ -64,24 +64,46 @@ urlpatterns = [
     path('xadmin/', xadmin.site.urls),
     re_path(r'^media/(?P<path>.*)$', serve, {"document_root": MEDIA_ROOT}),
 
-    path('api-auth/', include('rest_framework.urls')),
+    path('api-auth/', include('rest_framework.urls', namespace="rest_framework")),
     path('', include(router.urls)),
-    path('docs/', include_docs_urls(title="online商品")),
+    # apidoc 查看页面
+    path('docs/', include_docs_urls(title="生鲜")),
     # 首页
     path('index/', TemplateView.as_view(template_name='index.html'), name='index'),
+    path('test/', include("goods.urls"))
 ]
 
 # drf 自带的认证模式该路由返回一个json格式的{ 'token' : '9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b'}  保存到我们的数据库的那个token表
-# urlpatterns += [
+# urlpatterns += [p
 #     path(r'api-token-auth/', vs.obtain_auth_token)
 # ]
 from rest_framework_jwt.views import obtain_jwt_token
 # jwt的认证接口
 urlpatterns += [
-    path(r'^login/$', obtain_jwt_token),
+    re_path(r'^login/$', obtain_jwt_token),
 ]
 
 # 第三方登录  url 集成
 urlpatterns += [
     path('', include('social_django.urls', namespace='social'))
+]
+
+from rest_framework import permissions
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+schema_view = get_schema_view(
+    openapi.Info(
+        title="online API",
+        default_version='v1',
+        description="online生鲜 api",
+        terms_of_service="111",
+        contact=openapi.Contact(email="11"),
+        license=openapi.License(name="11"),
+    ),
+    public=True,
+    permission_classes=(permissions.AllowAny,),
+)
+# 在原有的路由里面添加一个
+urlpatterns += [
+	path('api_doc/', schema_view.with_ui('redoc', cache_timeout=0), name="online API"),
 ]

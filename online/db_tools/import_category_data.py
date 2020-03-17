@@ -7,7 +7,7 @@ import os
 
 # 获取当前文件的路径（运行脚本）
 pwd = os.path.dirname(os.path.realpath(__file__))
-# 获取项目的跟目录
+# 获取项目的跟根目录 加入到python路径搜索下面   和settings里一样 os.path.insert
 sys.path.append(pwd+"../")
 # 要想单独使用django的model，必须指定一个环境变量，在manage.py或wsgi.py中找
 # 参照manage.py里面就知道为什么这样设置了

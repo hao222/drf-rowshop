@@ -25,15 +25,17 @@ class GoodsCategory(models.Model):
 
 
     class Meta:
-            verbose_name = "商品类别"
-            verbose_name_plural = verbose_name
+
+        verbose_name = "商品类别"
+        verbose_name_plural = verbose_name
+
     def __str__(self):
         return self.name
 
 
 class GoodsCategoryBrand(models.Model):
     """
-    品牌 首页展示大分类
+    品牌 首页展示大分类 一个栏目可能有多个品牌
     """
     category = models.ForeignKey(GoodsCategory, related_name="brands", null=True, blank=True, verbose_name="商品类目", on_delete=models.CASCADE)
     name = models.CharField(default="", max_length=30, verbose_name="品牌名", help_text="品牌名")
@@ -82,7 +84,7 @@ class Goods(models.Model):
 
 class GoodsImage(models.Model):
     """
-    商品轮播图
+    商品轮播图   商品详情里的图片
     """
     goods = models.ForeignKey(Goods, verbose_name="商品", related_name="images", on_delete=models.CASCADE)
     image = models.ImageField(upload_to="", verbose_name="图片", null=True, blank=True)
