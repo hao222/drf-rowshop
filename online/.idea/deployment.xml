@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" serverName="onlineshop" autoUploadExternalChanges="true">
+  <component name="PublishConfigData" autoUploadExternalChanges="true">
     <serverData>
-      <paths name="onlineshop">
+      <paths name="online">
         <serverdata>
           <mappings>
-            <mapping deploy="/root/projects/onlineshop" local="$PROJECT_DIR$" web="/" />
+            <mapping deploy="/root/data/online_projects/onlineshop" local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>
