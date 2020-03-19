@@ -28,7 +28,7 @@ from rest_framework.authtoken import views as vs
 # from goods.views_base import GoodsListView
 from goods.views import GoodsListViewSet, CategoryViewSet, BannerViewset, IndexCategoryViewset, HotSearchsViewset
 from goods import views
-from trade.views import ReadOnlyModelViewset, OrderViewset
+from trade.views import ReadOnlyModelViewset, OrderViewset, AlipayView, PayHandlerView, AlipayView1
 from users.views import SmsCodeViewSet, UserViewSet
 from user_operation.views import UserFavViewset, LeavingMessageViewSet, AddressViewSet
 
@@ -78,12 +78,12 @@ urlpatterns = [
 #     path(r'api-token-auth/', vs.obtain_auth_token)
 # ]
 from rest_framework_jwt.views import obtain_jwt_token
-# jwt的认证接口
+# jwt的认证接口 加$ 符号原因是 防止第三方登陆 login找错路由
 urlpatterns += [
     re_path(r'^login/$', obtain_jwt_token),
 ]
 
-# 第三方登录  url 集成
+# 第三方登录  url 集成包括login/<backend> complete/<backend>
 urlpatterns += [
     path('', include('social_django.urls', namespace='social'))
 ]
@@ -106,4 +106,13 @@ schema_view = get_schema_view(
 # 在原有的路由里面添加一个
 urlpatterns += [
 	path('api_doc/', schema_view.with_ui('redoc', cache_timeout=0), name="online API"),
+    path("pay", AlipayView.as_view(), name="pay"),
+    path("alipay/handler", PayHandlerView.as_view(), name="payhandler"),
+    path("alipay/return/", AlipayView1.as_view(), name="alipay"),
+
+]
+
+# allauth
+urlpatterns += [
+    path("accounts/", include("allauth.urls"))
 ]

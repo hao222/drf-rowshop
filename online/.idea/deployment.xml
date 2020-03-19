@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUploadExternalChanges="true">
+  <component name="PublishConfigData" autoUpload="Always" serverName="root@111.229.129.33:22" autoUploadExternalChanges="true">
     <serverData>
       <paths name="online">
         <serverdata>
           <mappings>
-            <mapping deploy="/root/data/online_projects/onlineshop" local="$PROJECT_DIR$" web="/" />
+            <mapping deploy="/root/data/online_shop/online" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="root@111.229.129.33:22">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/tmp/pycharm_project_457" local="$PROJECT_DIR$" />
           </mappings>
         </serverdata>
       </paths>
     </serverData>
+    <option name="myAutoUpload" value="ALWAYS" />
   </component>
 </project>

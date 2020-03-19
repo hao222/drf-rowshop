@@ -37,9 +37,10 @@ AUTH_USER_MODEL = 'users.UserApp'
 AUTHENTICATION_BACKENDS = (
     'users.views.CustomBackend',
     'social_core.backends.weibo.WeiboOAuth2',
-    'social_core.backends.qq.BaseOAuth2',
+    'social_core.backends.qq.QQOAuth2',
     'social_core.backends.weixin.WeixinOAuth2',
     'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',    # allauth身份认证
 )
 # Application definition
 
@@ -59,10 +60,16 @@ INSTALLED_APPS = [
     'xadmin',
     'rest_framework',
     'django_filters',
-    'rest_framework.authtoken',   # 使用 TokenAuthentication 时候 需要用到，会生成token表，此处弃用
+    # 'rest_framework.authtoken',   # 使用 TokenAuthentication 时候 需要用到，会生成token表，此处弃用
     'corsheaders',
     'social_django',
     'drf_yasg',
+    # 以下是另一个第三方登录django-allauth
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    # 'allauth.socialaccount'
+    'allauth.socialaccount.providers.weibo',
 ]
 
 MIDDLEWARE = [
@@ -70,7 +77,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -95,10 +102,14 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'social_django.context_processors.backends',
                 'social_django.context_processors.login_redirect',
+                # allauth 需要 django 提供这个处理器
+                'django.template.context_processors.request',
             ],
         },
     },
 ]
+# zhandain
+SITE_ID = 1
 
 WSGI_APPLICATION = 'online.wsgi.application'
 
@@ -142,7 +153,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'zh-hans'
 
-TIME_ZONE = 'Asia/shanghai'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
@@ -173,15 +184,15 @@ REST_FRAMEWORK = {
         # JWT 是我们这次要使用的验证方式，但不是全局验证  因为如果在访问页面时，token过期了，那么就会导致错误。
         # 'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
     ),
-    # ddrf 设置api的访问速率  通常是为了防止 在一段时间内 爬虫的操作
-    # 'DEFAULT_THROTTLE_CLASSES': (
-    #     'rest_framework.throttling.AnonRateThrottle',    # 用户登录之前， 通过ip地址判断
-    #     'rest_framework.throttling.UserRateThrottle'     # 用户登录后  通过token判断
-    # ),
-    # 'DEFAULT_THROTTLE_RATES': {
-    #     'anon': '2/minute',
-    #     'user': '3/minute'
-    # }
+    # drf 设置api的访问速率  通常是为了防止 在一段时间内 爬虫的操作
+    'DEFAULT_THROTTLE_CLASSES': (
+        'rest_framework.throttling.AnonRateThrottle',    # 用户登录之前， 通过ip地址判断
+        'rest_framework.throttling.UserRateThrottle'     # 用户登录后  通过token判断
+    ),
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '10/minute',           # 一分钟访问次数
+        'user': '15/minute'
+    }
 }
 
 # JWT设置
@@ -213,6 +224,7 @@ CACHES = {
         }
     }
 }
+APPEND_SLASH=False
 
 # 微博开发平台  app_key   secret
 SOCIAL_AUTH_WEIBO_KEY = '3604588907'
@@ -226,3 +238,15 @@ SOCIAL_AUTH_WEIXIN_SECRET = 'bazqux'
 
 # 登录成功之后 王什么地方跳转
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/index/'
+
+# alipay
+
+private_key = os.path.join(BASE_DIR, "apps/trade/keys/private2048.txt")
+ali_pub_key = os.path.join(BASE_DIR, "apps/trade/keys/zfbpub.txt")
+app_id = "2016101100658599"
+test_box = "https://openapi.alipaydev.com/gateway.do"
+
+
+
+# 设置登录和注册成功后重定向的页面，默认是 "/index"
+LOGIN_REDIRECT_URL = "/index/"

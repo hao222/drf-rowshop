@@ -70,10 +70,11 @@ class BrandSerializer(serializers.ModelSerializer):
 
 class IndexCategorySerializer(serializers.ModelSerializer):
     brands = BrandSerializer(many=True)
-    # 由于获取商品的时候 是通过第三类别最小分类下的商品  所以需要自己定义个函数方法
+    # 由于获取商品的时候 是通过第三类别最小分类下的商品  所以需要自己定义函数方法
     goods = serializers.SerializerMethodField()
     # 取出二级商品分类
     sub_cat = CategorySerializer2(many=True)
+    # 商品广告位
     ad_goods = serializers.SerializerMethodField()
 
     def get_goods(self, obj):
