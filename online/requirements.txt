@@ -1,4 +1,4 @@
-aiohttp==3.6.2
+aiohttp==3.7.4
 alipay-sdk-python==3.3.398
 asn1crypto==0.24.0
 async-timeout==3.0.1
